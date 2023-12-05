@@ -1,7 +1,8 @@
 package tasks;
 
 public class Subtask extends Task {
-    public int epicId;
+    private int epicId;
+
     public Subtask(String name, String description, String status, EpicTask epicTask) {
         super(name, description, status);
         this.epicId = epicTask.id;

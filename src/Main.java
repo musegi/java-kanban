@@ -32,7 +32,9 @@ public class Main {
         System.out.println(manager.getTaskById(10));
         manager.create(new EpicTask("mama", "eto moya mama"));
         manager.create(new Subtask("family", "my family",
-                "NEW", manager.getEpicTaskById(11)));
+                "DONE", manager.getEpicTaskById(11)));
+        manager.create(new Subtask("MAM", "my family",
+                "DONE", manager.getEpicTaskById(11)));
         System.out.println();
         System.out.println(manager.getSubtaskListByEpicTaskId(7));
         System.out.println(manager.getSubtaskListByEpicTaskId(11));

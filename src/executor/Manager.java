@@ -27,11 +27,11 @@ public class Manager {
     }
 
     public Subtask create(Subtask subtask){
-        if (epicTasks.containsKey(subtask.epicId)) {
+        if (epicTasks.containsKey(subtask.getEpicId())) {
             subtask.setId(taskId++);
             subtasks.put(subtask.getId(), subtask);
-            EpicTask epicTask = getEpicTaskById(subtask.epicId);
-            epicTask.subtaskIds.add(subtask.getId());
+            EpicTask epicTask = getEpicTaskById(subtask.getEpicId());
+            epicTask.getSubtaskIds().add(subtask.getId());
             updateEpicTaskStatus(epicTask);
             return subtask;
         }
@@ -50,30 +50,10 @@ public class Manager {
 
     public Subtask update(Subtask subtask){
         subtasks.put(subtask.getId(), subtask);
-        EpicTask epicTask = getEpicTaskById(subtask.epicId);
-        epicTask.subtaskIds.add(subtask.getId());
+        EpicTask epicTask = getEpicTaskById(subtask.getEpicId());
+        epicTask.getSubtaskIds().add(subtask.getId());
         updateEpicTaskStatus(epicTask);
         return subtask;
-    }
-
-    public void updateEpicTaskStatus(EpicTask epicTask){
-        if (epicTask.subtaskIds.isEmpty()){
-            epicTask.setStatus("NEW");
-        } else {
-            ArrayList<String> statusList = new ArrayList<>();
-            for (Integer subtaskId : epicTask.subtaskIds) {
-                statusList.add(getSubtaskById(subtaskId).getStatus());
-            }
-            if (statusList.contains("NEW") && !statusList.contains("IN_PROGRESS")
-                    && !statusList.contains("DONE")) {
-                epicTask.setStatus(("NEW"));
-            } else if (!statusList.contains("NEW") && !statusList.contains("IN_PROGRESS")
-                    && statusList.contains("DONE")){
-                epicTask.setStatus("DONE");
-            } else {
-                epicTask.setStatus("IN_PROGRESS");
-            }
-        }
     }
 
     public void deleteTaskById(Integer id) {
@@ -81,7 +61,7 @@ public class Manager {
     }
 
     public void deleteEpicTaskById(Integer id) {
-        for (Integer subtaskId : epicTasks.get(id).subtaskIds) {
+        for (Integer subtaskId : epicTasks.get(id).getSubtaskIds()) {
             subtasks.remove(subtaskId);
         }
         epicTasks.remove(id);
@@ -90,7 +70,7 @@ public class Manager {
 
     public void deleteSubtaskById(Integer id) {
         EpicTask epicTask = getEpicTaskById(subtasks.get(id).getEpicId());
-        epicTask.subtaskIds.remove(id);
+        epicTask.getSubtaskIds().remove(id);
         updateEpicTaskStatus(epicTask);
         subtasks.remove(id);
     }
@@ -119,7 +99,7 @@ public class Manager {
     public void deleteSubtasks() {
         subtasks.clear();
         for (EpicTask epicTask : epicTasks.values()) {
-            epicTask.subtaskIds.clear();
+            epicTask.getSubtaskIds().clear();
             updateEpicTaskStatus(epicTask);
         }
     }
@@ -127,7 +107,7 @@ public class Manager {
     public ArrayList<Subtask> getSubtaskListByEpicTaskId(Integer epicId) {
         EpicTask epicTask = getEpicTaskById(epicId);
         ArrayList<Subtask> subtasksInEpicTask = new ArrayList<>();
-        for (Integer subtaskId : epicTask.subtaskIds) {
+        for (Integer subtaskId : epicTask.getSubtaskIds()) {
             subtasksInEpicTask.add(getSubtaskById(subtaskId));
         }
         return subtasksInEpicTask;
@@ -153,21 +133,23 @@ public class Manager {
         }
         return null;
     }
-    /* возможно ли объединить три метода getTaskById, getEpicTaskById и getSubtaskById?
-        у меня в голове  было что-то вроде такого:
-    public tasks.Task getTaskById(Integer id) {
-        if (tasks.containsKey(id)) {
-            return tasks.get(id);
-        } else if (epicTasks.containsKey(id)) {
-            return epicTasks.get(id);
-        } else if (subtasks.containsKey(id)){
-            return subtasks.get(id);
-        }
-        return null;
-    }
-    но так как всегда возвращается объект типа tasks.Task при надобности приводить тип в другой.
-    например: (tasks.EpicTask) getTaskById(8);
-    так можно или лучше делать отдельный метод для каждого типа?
-    */
 
+    private void updateEpicTaskStatus(EpicTask epicTask){
+        if (epicTask.getSubtaskIds().isEmpty()){
+            epicTask.setStatus("NEW");
+        } else {
+            ArrayList<String> statusList = new ArrayList<>();
+            for (Integer subtaskId : epicTask.getSubtaskIds()) {
+                statusList.add(getSubtaskById(subtaskId).getStatus());
+            } if (statusList.contains("NEW") && !statusList.contains("IN_PROGRESS")
+                    && !statusList.contains("DONE")) {
+                epicTask.setStatus(("NEW"));
+            } else if (!statusList.contains("NEW") && !statusList.contains("IN_PROGRESS")
+                    && statusList.contains("DONE")){
+                epicTask.setStatus("DONE");
+            } else {
+                epicTask.setStatus("IN_PROGRESS");
+            }
+        }
+    }
 }
