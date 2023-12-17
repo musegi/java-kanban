@@ -3,10 +3,10 @@ package tasks;
 import java.util.ArrayList;
 
 public class EpicTask extends Task {
-    private ArrayList<Integer> subtaskIds = new ArrayList<>();
+    private final ArrayList<Integer> subtaskIds = new ArrayList<>();
 
     public EpicTask (String name, String description) {
-        super(name, description, "NEW");
+        super(name, description, Statuses.NEW);
     }
 
     @Override
