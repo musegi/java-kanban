@@ -5,8 +5,12 @@ import tasks.Subtask;
 import tasks.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface TaskManager {
+
+    List<Task> getHistory();
+
     Task create(Task task);
 
     EpicTask create(EpicTask epicTask);
@@ -44,6 +48,4 @@ public interface TaskManager {
     EpicTask getEpicTaskById(Integer id);
 
     Subtask getSubtaskById(Integer id);
-
-    void updateEpicTaskStatus(EpicTask epicTask);
 }

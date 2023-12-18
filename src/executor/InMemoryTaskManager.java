@@ -7,6 +7,7 @@ import tasks.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
 
@@ -15,6 +16,11 @@ public class InMemoryTaskManager implements TaskManager {
     public HashMap<Integer, EpicTask> epicTasks = new HashMap<>();
     public HashMap<Integer, Subtask> subtasks = new HashMap<>();
     private int taskId = 1;
+
+    @Override
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
+    }
 
     @Override
     public Task create(Task task){
@@ -158,8 +164,7 @@ public class InMemoryTaskManager implements TaskManager {
         return null;
     }
 
-    @Override
-    public void updateEpicTaskStatus(EpicTask epicTask){
+    private void updateEpicTaskStatus(EpicTask epicTask){
         if (epicTask.getSubtaskIds().isEmpty()){
             epicTask.setStatus(Statuses.NEW);
         } else {
