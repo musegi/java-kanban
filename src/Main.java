@@ -1,4 +1,3 @@
-import executor.InMemoryHistoryManager;
 import tasks.EpicTask;
 import executor.InMemoryTaskManager;
 import tasks.Statuses;
@@ -41,13 +40,19 @@ public class Main {
         System.out.println(manager.getSubtaskListByEpicTaskId(7));
         System.out.println(manager.getSubtaskListByEpicTaskId(11));
         System.out.println();
+        System.out.println("история 1: " + manager.getHistory());
         manager.deleteSubtaskById(8);
+        System.out.println("история 2: " + manager.getHistory());
         System.out.println(manager.epicTasks);
         System.out.println(manager.subtasks);
         manager.getEpicTaskById(7);
+        manager.getTaskById(4);
         manager.getEpicTaskById(7);
         manager.getEpicTaskById(7);
-        manager.getEpicTaskById(7);
+        System.out.println(manager.getHistory());
+        manager.deleteEpicTasks();
+        System.out.println("история: " + manager.getHistory());
+        manager.deleteTaskById(4);
         System.out.println(manager.getHistory());
     }
 }
