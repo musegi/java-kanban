@@ -6,11 +6,13 @@ public class Task {
     protected String description;
     protected int id;
     protected Statuses status;
+    protected TaskTypes type;
 
     public Task(String name, String description, Statuses status) {
         this.name = name;
         this.description = description;
         this.status = status;
+        this.type = TaskTypes.TASK;
     }
 
     public void setId(int id) {
@@ -31,11 +33,10 @@ public class Task {
 
         @Override
     public String toString() {
-        return  '\n' + "Task{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", id=" + id +
-                ", status='" + status + '\'' +
-                '}';
+            return '\n' + Integer.toString(id) + ',' +
+                    type + ',' +
+                    name + ',' +
+                    status + ',' +
+                    description;
     }
 }
