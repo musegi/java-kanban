@@ -3,16 +3,15 @@ package executor;
 import tasks.*;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private final String file;
+    private static final String FILE_HEADER  = "id,type,name,status,description,epic";
 
     public FileBackedTaskManager(String file) {
         this.file = file;
@@ -21,13 +20,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public static FileBackedTaskManager loadFromFile(String file) {
         FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
         String tasksInFile = parsingFile(file);
-        if (tasksInFile.isEmpty()) {
+        if (tasksInFile == null) {
             return fileBackedTaskManager;
         }
         String[] taskLine = tasksInFile.split("\n");
         List<Integer> taskInHistory = historyFromString(file);
         for (String taskString : taskLine) {
-            if (taskString.equals("id,type,name,status,description,epic")) {
+            if (taskString.equals(FILE_HEADER)) {
                 continue;
             } else if (taskString.isEmpty()) {
                 break;
@@ -47,23 +46,28 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private Task fromString(String line) {
         String[] part = line.split(",");
-        switch (TaskTypes.valueOf(part[1])) {
+        final int id = Integer.parseInt(part[0]);
+        final TaskTypes type = TaskTypes.valueOf(part[1]);
+        final String name = part[2];
+        final Statuses status = Statuses.valueOf(part[3]);
+        final String description = part[4];
+        switch (type) {
             case TASK:
-                Task task = new Task(part[2], part[4], Statuses.valueOf(part[3]));
-                task.setId(Integer.parseInt(part[0]));
+                Task task = new Task(name, description, status);
+                task.setId(id);
                 create(task);
                 return task;
 
             case EPIC:
-                EpicTask epicTask = new EpicTask(part[2], part[4]);
-                epicTask.setId(Integer.parseInt(part[0]));
+                EpicTask epicTask = new EpicTask(name, description);
+                epicTask.setId(id);
                 create(epicTask);
                 return epicTask;
 
             case SUBTASK:
-                Subtask subtask = new Subtask(part[2], part[4], Statuses.valueOf(part[3]),
-                        epicTasks.get(Integer.parseInt(part[5])));
-                subtask.setId(Integer.parseInt(part[0]));
+                final int epic = Integer.parseInt(part[5]);
+                Subtask subtask = new Subtask(name, description, status, epicTasks.get(epic));
+                subtask.setId(id);
                 create(subtask);
                 return subtask;
         }
@@ -110,8 +114,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try {
             Writer fileWriter = new FileWriter(file);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            String firstLine = "id,type,name,status,description,epic";
-            bufferedWriter.write(firstLine);
+            bufferedWriter.write(FILE_HEADER);
             for (Task task : tasks.values()) {
                 bufferedWriter.write(task.toString());
             }
