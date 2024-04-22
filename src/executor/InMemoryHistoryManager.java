@@ -13,7 +13,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     private Node<Task> head;
     private Node<Task> tail;
 
-    private Node<Task> linkLast (Task task) {
+    private Node<Task> linkLast(Task task) {
         Node<Task> node = new Node<>(task);
         if (head == null) {
             head = node;

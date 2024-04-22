@@ -1,8 +1,6 @@
 package executor;
 
-import tasks.EpicTask;
-import tasks.Subtask;
-import tasks.Task;
+import tasks.*;
 
 import java.util.ArrayList;
 import java.util.List;
