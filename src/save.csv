@@ -1,0 +1,14 @@
+id,type,name,status,description,startTime,duration,epic
+1,TASK,аа,NEW,бб,09:30 25.07.24,30
+2,TASK,вв,IN_PROGRESS,гг,10:30 25.07.24,60
+3,TASK,дд,NEW,ее,12:50 26.07.24,75
+4,TASK,ёё,NEW,жж,14:52 27.08.24,40
+5,TASK,зз,IN_PROGRESS,ии,15:59 27.08.24,50
+6,TASK,йй,DONE,кк,null,0
+10,TASK,йй,DONE,кк,null,0
+7,EPIC,йй,IN_PROGRESS,кк,15:46 23.08.24,35
+11,EPIC,йй,NEW,кк,null,0
+8,SUBTASK,aa,NEW,blin,10:24 28.08.24,15,7
+9,SUBTASK,aавававаавыa,IN_PROGRESS,blin,15:46 23.08.24,20,7
+
+7,8,9,7

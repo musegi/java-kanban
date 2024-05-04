@@ -11,7 +11,7 @@ import java.util.List;
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private final String file;
-    private static final String FILE_HEADER  = "id,type,name,status,description,epic";
+    private static final String FILE_HEADER  = "id,type,name,status,description,startTime,duration,epic";
 
     public FileBackedTaskManager(String file) {
         this.file = file;
@@ -51,22 +51,25 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         final String name = part[2];
         final Statuses status = Statuses.valueOf(part[3]);
         final String description = part[4];
+        int duration = Integer.parseInt(part[6]);
+        String startTime = part[5];
         switch (type) {
             case TASK:
-                Task task = new Task(name, description, status);
+                Task task = new Task(name, description, status, startTime, duration);
                 task.setId(id);
                 create(task);
                 return task;
 
             case EPIC:
-                EpicTask epicTask = new EpicTask(name, description);
+                EpicTask epicTask = new EpicTask(name, description, startTime, duration);
                 epicTask.setId(id);
                 create(epicTask);
                 return epicTask;
 
             case SUBTASK:
-                final int epic = Integer.parseInt(part[5]);
-                Subtask subtask = new Subtask(name, description, status, epicTasks.get(epic));
+                final int epic = Integer.parseInt(part[7]);
+                Subtask subtask = new Subtask(name, description, status, epicTasks.get(epic),
+                        startTime, duration);
                 subtask.setId(id);
                 create(subtask);
                 return subtask;
@@ -99,11 +102,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private static List<Integer> historyFromString(String value) {
         String[] historyArray = parsingFile(value).split("\n");
         String stringOfHistory = historyArray[historyArray.length - 1];
-        if (stringOfHistory.isEmpty()) {
-            return null;
+        List<Integer> historyList = new ArrayList<>();
+        if (stringOfHistory.isEmpty() || stringOfHistory.contains("TASK")
+        || stringOfHistory.contains("EPIC") || stringOfHistory.contains("SUBTASK")) {
+            return historyList;
         }
         String[] lineHistory = stringOfHistory.split(",");
-        List<Integer> historyList = new ArrayList<>();
+
         for (String line : lineHistory) {
             historyList.add(Integer.parseInt(line));
         }
