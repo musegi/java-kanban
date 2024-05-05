@@ -49,7 +49,7 @@ class FileBackedTaskManagerTest {
         Subtask subtask4 = new Subtask("subtask4", "task description 4", Statuses.DONE, epic,
                 "07:00 02.02.02", 10);
         Task task2 = new Task("task2", "task description 2", Statuses.NEW,
-                "11:00 01.02.02", 100);
+                "11:00 04.02.02", 100);
         Task task3 = new Task("task3", "task description 3", Statuses.IN_PROGRESS,
                 "10:00 01.02.02", 100);
         manager.create(subtask1);
