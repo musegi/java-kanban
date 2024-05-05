@@ -17,11 +17,13 @@ public class Main {
         System.out.println(manager.tasks);
         manager.create(new Task("йй", "кк",Statuses.DONE));
         System.out.println(manager.tasks);
+        manager.create(new Task("сос", "помогите",Statuses.NEW,
+                "08:45 20.07.24", 120));
         System.out.println(manager.create(new EpicTask("йй", "кк", null, 0)));
         System.out.println(manager.create(new Subtask("aa", "blin",
-                Statuses.NEW, manager.getEpicTaskById(7), "10:24 28.08.24",15)));
+                Statuses.NEW, manager.getEpicTaskById(8), "10:24 28.08.24",15)));
         manager.create(new Subtask("aавававаавыa", "blin",
-                Statuses.IN_PROGRESS, manager.getEpicTaskById(7), "15:46 23.08.24",20));
+                Statuses.IN_PROGRESS, manager.getEpicTaskById(8), "15:46 23.08.24",20));
         System.out.println(manager.epicTasks);
         System.out.println(manager.getSubtasksList());
         System.out.println();
@@ -33,7 +35,6 @@ public class Main {
         System.out.println(manager.epicTasks);
         System.out.println(manager.subtasks);
         System.out.println("история: " + manager.getHistory());
-        manager.create(new Task("сос", "помогите",Statuses.NEW,
-                "08:45 25.07.24", 120));
+
     }
 }

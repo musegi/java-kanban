@@ -5,6 +5,8 @@ import tasks.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static tasks.Statuses.*;
+
 public class InMemoryTaskManager implements TaskManager {
 
     public HistoryManager historyManager = Managers.getDefaultHistory();
@@ -21,15 +23,15 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task create(Task task) {
-        if (isValid(task)) {
-            task.setId(taskId++);
-            tasks.put(task.getId(), task);
-            prioritizedTasks.add(task);
-            return task;
-        } else {
-            System.out.println("Указано неверное время, задачи пересекаются");
-            return null;
+        if (!isValid(task)) {
+            throw new TaskValidationException("Ошибка создания: задача " + task.getName() +
+                    " пересекается по времени с существующей задачей.");
         }
+        task.setId(taskId++);
+        tasks.put(task.getId(), task);
+        prioritizedTasks.add(task);
+        return task;
+
     }
 
     @Override
@@ -41,34 +43,33 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Subtask create(Subtask subtask) {
-        if (isValid(subtask)) {
-            if (epicTasks.containsKey(subtask.getEpicId())) {
-                subtask.setId(taskId++);
-                subtasks.put(subtask.getId(), subtask);
-                EpicTask epicTask = getEpicTaskById(subtask.getEpicId());
-                epicTask.getSubtaskIds().add(subtask.getId());
-                updateEpicTaskStatus(epicTask);
-                updateEpicTime(epicTask);
-                prioritizedTasks.add(subtask);
-                return subtask;
-            }
-            System.out.println("Указан неверный epicID, задача не создана");
-            return null;
+        if (!isValid(subtask)) {
+            throw new TaskValidationException("Ошибка создания: задача " + subtask.getName() +
+                    " пересекается по времени с существующей задачей.");
         }
-        System.out.println("Указано неверное время, задачи пересекаются");
-        return null;
+        if (!epicTasks.containsKey(subtask.getEpicId())) {
+            throw new TaskValidationException("Ошибка создания: у подзадачи " + subtask.getName() +
+                    " указан неверный EpicId:" + subtask.getEpicId());
+        }
+        subtask.setId(taskId++);
+        subtasks.put(subtask.getId(), subtask);
+        EpicTask epicTask = getEpicTaskById(subtask.getEpicId());
+        epicTask.getSubtaskIds().add(subtask.getId());
+        updateEpicTaskStatus(epicTask);
+        updateEpicTime(epicTask);
+        prioritizedTasks.add(subtask);
+        return subtask;
     }
 
     @Override
     public Task update(Task task) {
-        if (isValid(task)) {
-            tasks.put(task.getId(), task);
-            prioritizedTasks.add(task);
-            return task;
-        } else {
-            System.out.println("Указано неверное время, задачи пересекаются");
-            return null;
+        if (!isValid(task)) {
+            throw new TaskValidationException("Ошибка изменения: задача " + task.getName() +
+                    " пересекается по времени с существующей задачей.");
         }
+        tasks.put(task.getId(), task);
+        prioritizedTasks.add(task);
+        return task;
     }
 
     @Override
@@ -80,18 +81,17 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Subtask update(Subtask subtask) {
-        if (isValid((subtask))) {
-            subtasks.put(subtask.getId(), subtask);
-            EpicTask epicTask = getEpicTaskById(subtask.getEpicId());
-            epicTask.getSubtaskIds().add(subtask.getId());
-            updateEpicTaskStatus(epicTask);
-            updateEpicTime(epicTask);
-            prioritizedTasks.add(subtask);
-            return subtask;
-        } else {
-            System.out.println("Указано неверное время, задачи пересекаются");
-            return null;
+        if (!isValid(subtask)) {
+            throw new TaskValidationException("Ошибка изменения: задача " + subtask.getName() +
+                    " пересекается по времени с существующей задачей.");
         }
+        subtasks.put(subtask.getId(), subtask);
+        EpicTask epicTask = getEpicTaskById(subtask.getEpicId());
+        epicTask.getSubtaskIds().add(subtask.getId());
+        updateEpicTaskStatus(epicTask);
+        updateEpicTime(epicTask);
+        prioritizedTasks.add(subtask);
+        return subtask;
     }
 
     @Override
@@ -227,22 +227,23 @@ public class InMemoryTaskManager implements TaskManager {
                         task.getEndTime().isAfter(newTask.getStartTime())));
     }
 
+    @SuppressWarnings("SuspiciousMethodCalls")
     private void updateEpicTaskStatus(EpicTask epicTask) {
         if (epicTask.getSubtaskIds().isEmpty()) {
-            epicTask.setStatus(Statuses.NEW);
+            epicTask.setStatus(NEW);
         } else {
             ArrayList<String> statusList = new ArrayList<>();
             for (Integer subtaskId : epicTask.getSubtaskIds()) {
                 statusList.add(String.valueOf(getSubtaskById(subtaskId).getStatus()));
             }
-            if (statusList.contains(Statuses.NEW) && !statusList.contains(Statuses.IN_PROGRESS)
-                    && !statusList.contains(Statuses.DONE)) {
-                epicTask.setStatus((Statuses.NEW));
-            } else if (!statusList.contains(Statuses.NEW) && !statusList.contains(Statuses.IN_PROGRESS)
-                    && statusList.contains(Statuses.DONE)) {
-                epicTask.setStatus(Statuses.DONE);
+            if (statusList.contains(NEW) && !statusList.contains(IN_PROGRESS)
+                    && !statusList.contains(DONE)) {
+                epicTask.setStatus((NEW));
+            } else if (!statusList.contains(NEW) && !statusList.contains(IN_PROGRESS)
+                    && statusList.contains(DONE)) {
+                epicTask.setStatus(DONE);
             } else {
-                epicTask.setStatus(Statuses.IN_PROGRESS);
+                epicTask.setStatus(IN_PROGRESS);
             }
         }
     }
