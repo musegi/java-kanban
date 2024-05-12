@@ -3,7 +3,6 @@ package tasks;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@SuppressWarnings("checkstyle:Regexp")
 public class Task {
 
     protected String name;
