@@ -28,13 +28,13 @@ public class EpicTasksHandler extends BaseHttpHandler implements HttpHandler {
 
         switch (method) {
             case ("GET"):
-                getTasks(exchange);
+                getEpicTasks(exchange);
                 break;
             case ("POST"):
-                postTasks(exchange);
+                postEpicTasks(exchange);
                 break;
             case ("DELETE"):
-                removeTasks(exchange);
+                removeEpicTasks(exchange);
                 break;
             default:
                 sendNotFound(exchange, "Получен некорректный запрос - " + method
@@ -42,7 +42,7 @@ public class EpicTasksHandler extends BaseHttpHandler implements HttpHandler {
         }
     }
 
-    private void getTasks(HttpExchange exchange) throws IOException {
+    private void getEpicTasks(HttpExchange exchange) throws IOException {
         String path = exchange.getRequestURI().getPath();
         String response;
         if (Pattern.matches("^/epics$", path)) {
@@ -73,7 +73,7 @@ public class EpicTasksHandler extends BaseHttpHandler implements HttpHandler {
         }
     }
 
-    private void postTasks(HttpExchange exchange) throws IOException {
+    private void postEpicTasks(HttpExchange exchange) throws IOException {
         String path = exchange.getRequestURI().getPath();
         if (Pattern.matches("/epics$", path)) {
             String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
@@ -106,7 +106,7 @@ public class EpicTasksHandler extends BaseHttpHandler implements HttpHandler {
         }
     }
 
-    private void removeTasks(HttpExchange exchange) throws IOException {
+    private void removeEpicTasks(HttpExchange exchange) throws IOException {
         String path = exchange.getRequestURI().getPath();
         if (Pattern.matches("^/epics$", path)) {
             manager.deleteEpicTasks();
