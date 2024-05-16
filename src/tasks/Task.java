@@ -22,14 +22,13 @@ public class Task {
     }
 
     public Task(String name, String description, Statuses status, String startTime, int duration) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
         this.name = name;
         this.description = description;
         this.status = status;
         this.type = TaskTypes.TASK;
         if (startTime != null && !startTime.equals("null")) {
             this.duration = duration;
-            this.startTime = LocalDateTime.parse(startTime, formatter);
+            this.startTime = LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern("HH:mm dd.MM.yy"));
         }
     }
 
@@ -86,14 +85,13 @@ public class Task {
 
     @Override
     public String toString() {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
             String toString = '\n' + Integer.toString(id) + ',' +
                     type + ',' +
                     name + ',' +
                     status + ',' +
                     description;
             if (duration != 0) {
-                return toString + "," + startTime.format(formatter) + "," +
+                return toString + "," + startTime.format(DateTimeFormatter.ofPattern("HH:mm dd.MM.yy")) + "," +
                         duration;
             } else {
                 return toString + "," + "null" + "," + duration;
