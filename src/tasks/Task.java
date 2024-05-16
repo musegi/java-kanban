@@ -15,6 +15,10 @@ public class Task {
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
 
+    public Task() {
+
+    }
+
     public Task(String name, String description, Statuses status) {
         this.name = name;
         this.description = description;

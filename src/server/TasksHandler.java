@@ -14,11 +14,10 @@ import java.nio.charset.StandardCharsets;
 
 public class TasksHandler extends BaseHttpHandler implements HttpHandler {
     private final TaskManager manager;
-    private final Gson gson;
+    private final Gson gson = Managers.getGson();
 
     public TasksHandler(TaskManager manager) {
         this.manager = manager;
-        this.gson = Managers.getGson();
     }
 
     @Override
