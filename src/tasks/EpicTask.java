@@ -2,7 +2,6 @@ package tasks;
 
 import java.util.ArrayList;
 
-@SuppressWarnings("checkstyle:Regexp")
 public class EpicTask extends Task {
     private final ArrayList<Integer> subtaskIds = new ArrayList<>();
 
