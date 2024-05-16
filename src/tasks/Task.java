@@ -2,6 +2,7 @@ package tasks;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 public class Task {
 
@@ -13,12 +14,6 @@ public class Task {
     protected LocalDateTime startTime = null;
     protected int duration = 0;
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
-
-    public Task() {
-
-    }
-
     public Task(String name, String description, Statuses status) {
         this.name = name;
         this.description = description;
@@ -27,6 +22,7 @@ public class Task {
     }
 
     public Task(String name, String description, Statuses status, String startTime, int duration) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
         this.name = name;
         this.description = description;
         this.status = status;
@@ -80,8 +76,17 @@ public class Task {
         return startTime;
     }
 
-        @Override
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return id == task.id && duration == task.duration && Objects.equals(name, task.name) && Objects.equals(description, task.description) && status == task.status && type == task.type && Objects.equals(startTime, task.startTime);
+    }
+
+    @Override
     public String toString() {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
             String toString = '\n' + Integer.toString(id) + ',' +
                     type + ',' +
                     name + ',' +
